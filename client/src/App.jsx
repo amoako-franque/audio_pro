@@ -19,9 +19,8 @@ import {
 } from 'react-icons/fa'
 import './App.css'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:7667/api'
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
 
-// Waveform Image Component with Loading State
 function WaveformImageCard({ downloadUrl, isModal = false }) {
     const [imageLoading, setImageLoading] = useState(true)
     const [imageError, setImageError] = useState(false)
@@ -77,7 +76,6 @@ export default function App() {
     const [jobToDelete, setJobToDelete] = useState(null)
     const [features, setFeatures] = useState({ ffmpeg: { available: true, features: [] }, metadata: { available: true, features: [] } })
     const [darkMode, setDarkMode] = useState(() => {
-        // Check localStorage or default to false
         try {
             const saved = localStorage.getItem('darkMode')
             if (saved === null) return false
@@ -88,7 +86,6 @@ export default function App() {
         }
     })
 
-    // Apply dark mode on mount and when darkMode changes
     useEffect(() => {
         const root = document.documentElement
         if (darkMode) {
@@ -98,7 +95,6 @@ export default function App() {
         }
     }, [darkMode])
 
-    // Toggle dark mode and save to localStorage
     const toggleDarkMode = (e) => {
         e.preventDefault()
         e.stopPropagation()
@@ -112,11 +108,9 @@ export default function App() {
         }
     }
 
-    // Clip slicing parameters
     const [clipStart, setClipStart] = useState('0')
     const [clipEnd, setClipEnd] = useState('30')
 
-    // Conversion parameters
     const [outputFormat, setOutputFormat] = useState('mp3')
 
     useEffect(() => {
@@ -131,7 +125,6 @@ export default function App() {
             const response = await axios.get(`${ API_BASE_URL }/upload/features`)
             setFeatures(response.data)
 
-            // If current job type is not available, switch to metadata
             if (!response.data.ffmpeg.available && ['convert', 'slice', 'waveform'].includes(jobType)) {
                 setJobType('metadata')
                 toast.info('FFmpeg features are not available. Switched to metadata extraction.', {
@@ -140,7 +133,6 @@ export default function App() {
             }
         } catch (error) {
             console.error('Error loading features:', error)
-            // Default to assuming FFmpeg is not available on error
             setFeatures({
                 ffmpeg: { available: false, features: [] },
                 metadata: { available: true, features: ['metadata', 'analyze'] }
@@ -148,7 +140,6 @@ export default function App() {
         }
     }
 
-    // Remove redundant loading state update - already handled in loadJobs
 
     const loadJobs = async () => {
         try {
@@ -162,7 +153,6 @@ export default function App() {
     }
 
     const openDeleteModal = (job, event) => {
-        // Stop event propagation to prevent opening the job modal
         event.stopPropagation()
         setJobToDelete(job)
         setDeleteModalOpen(true)
@@ -182,15 +172,12 @@ export default function App() {
         try {
             const response = await axios.delete(`${ API_BASE_URL }/upload/job/${ jobToDelete.id }`)
 
-            // Remove job from state
             setJobs(jobs.filter(job => job.id !== jobToDelete.id))
 
-            // Close modal if the deleted job was selected
             if (selectedJob && selectedJob.id === jobToDelete.id) {
                 setSelectedJob(null)
             }
 
-            // Show success message with file count
             const fileCount = response.data.filesDeleted?.length || 0
             const fileText = fileCount === 1 ? 'file' : 'files'
             const warnings = response.data.warnings
@@ -215,7 +202,6 @@ export default function App() {
         } catch (error) {
             console.error('Error deleting job:', error)
 
-            // Extract detailed error information
             const errorData = error.response?.data || {}
             let errorTitle = 'Failed to Delete Job'
             let errorMessage = errorData.error || errorData.message || error.message || 'An unexpected error occurred'
