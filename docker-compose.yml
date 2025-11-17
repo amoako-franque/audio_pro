@@ -27,11 +27,11 @@ services:
       - DATABASE_URL=file:./dev.db
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - UPLOAD_DIR=./uploads
+      - UPLOAD_DIR=/app/uploads
       - NODE_ENV=production
     volumes:
       - ./server/uploads:/app/uploads
-      - ./server/dev.db:/app/dev.db
+      - ./server/prisma/dev.db:/app/dev.db
     depends_on:
       redis:
         condition: service_healthy
@@ -46,14 +46,28 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - DATABASE_URL=file:./dev.db
-      - UPLOAD_DIR=./uploads
+      - UPLOAD_DIR=/app/uploads
       - NODE_ENV=production
     volumes:
       - ./server/uploads:/app/uploads
-      - ./server/dev.db:/app/dev.db
+      - ./server/prisma/dev.db:/app/dev.db
     depends_on:
       redis:
         condition: service_healthy
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        # This is what the browser will use to call the API
+        VITE_API_URL: http://localhost:3001/api
+    container_name: audio-pro-client
+    ports:
+      - "5173:80"
+    depends_on:
+      - server
     restart: unless-stopped
 
 volumes:
