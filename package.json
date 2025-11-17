@@ -1,0 +1,21 @@
+{
+    "name": "audio-processing-framework",
+    "version": "1.0.0",
+    "description": "Mini audio processing framework with Express, Redis Queue, React, and Prisma",
+    "main": "index.js",
+    "scripts": {
+        "dev:server": "cd server && npm run dev",
+        "dev:worker": "cd server && npm run worker",
+        "dev:client": "cd client && npm start",
+        "install:all": "npm install && cd server && npm install && cd ../client && npm install"
+    },
+    "keywords": [
+        "audio",
+        "processing",
+        "express",
+        "redis",
+        "react"
+    ],
+    "author": "",
+    "license": "MIT"
+}

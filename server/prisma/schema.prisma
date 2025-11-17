@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AudioFile {
+  id          String   @id @default(uuid())
+  filename    String
+  originalName String
+  path        String
+  mimeType    String
+  size        Int      // in bytes
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  jobs        Job[]
+
+  @@map("audio_files")
+}
+
+model Job {
+  id          String      @id @default(uuid())
+  audioFileId String
+  type        String      // "metadata", "convert", "analyze", etc.
+  status      String      @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  progress    Int         @default(0) // 0-100
+  result      String?     // JSON string of results
+  error       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  completedAt DateTime?
+
+  audioFile   AudioFile   @relation(fields: [audioFileId], references: [id], onDelete: Cascade)
+
+  @@map("jobs")
+}
+

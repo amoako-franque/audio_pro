@@ -1,0 +1,27 @@
+FROM node:18-alpine
+
+# Install ffmpeg for audio processing
+RUN apk add --no-cache ffmpeg
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY prisma ./prisma/
+
+# Install dependencies
+RUN npm install
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Copy application code
+COPY . .
+
+# Create uploads directory
+RUN mkdir -p uploads
+
+EXPOSE 3001
+
+CMD ["npm", "start"]
+

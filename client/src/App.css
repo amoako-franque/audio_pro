@@ -1,0 +1,52 @@
+/* React Select Custom Styles */
+.react-select-container {
+  width: 100%;
+}
+
+.react-select__control {
+  transition: all 0.2s ease;
+}
+
+.react-select__control:hover {
+  border-color: #7d7aff !important;
+}
+
+.react-select__indicator-separator {
+  background-color: #e5e7eb;
+}
+
+.react-select__dropdown-indicator {
+  color: #6b7280;
+  transition: color 0.2s ease;
+}
+
+.react-select__dropdown-indicator:hover {
+  color: #7d7aff;
+}
+
+.react-select__option {
+  transition: all 0.15s ease;
+}
+
+.react-select__option--is-focused {
+  background-color: #f3f4f6 !important;
+}
+
+.react-select__option--is-selected {
+  background-color: #10b981 !important; /* emerald-500 */
+  color: white !important;
+}
+
+/* Ensure menu portal has highest z-index */
+.react-select__menu-portal {
+  z-index: 99999 !important;
+}
+
+.react-select__menu {
+  z-index: 99999 !important;
+}
+
+/* Fix for backdrop blur creating stacking context */
+.react-select__menu-portal > div {
+  z-index: 99999 !important;
+}
